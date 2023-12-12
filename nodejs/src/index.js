@@ -75,5 +75,6 @@ app.get("/part1_vulnerable", (req, res) => {
   res.render("pages/part1_vulnerable_results", { ...req.query });
 });
 
+app.use(express.static("public")); 
 
 app.listen(port, () => console.log(`Discite app listening on port ${port}!`));
