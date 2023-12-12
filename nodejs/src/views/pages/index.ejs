@@ -5,15 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Discite</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        #welcome-text {
+            font-size: 24px;
+            text-align: center;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .fade-out {
+            opacity: 0;
+        }
+    </style>
 </head>
 <body>
     <div class="login-container">
         <form class="login-form">
-            <h2>Login</h2>
+
+            <div id="welcome-text">Welcome!</div>    
+            <script>
+                const welcomeMessages = [
+                    "Bienvenido!",
+                    "Willkommen!",
+                    "Bienvenue!",
+                    "Benvenuto!",
+                    "ようこそ!",
+                    "歡迎!",
+                    "Välkommen!",
+                    "Добро пожаловать!",
+                    "환영합니다!",
+                    "स्वागत हे!",
+                    "Welcome!"
+                ];
+
+                const welcomeText = document.getElementById("welcome-text");
+                let currentIndex = 0;
+
+                function changeWelcomeMessage() {
+                    welcomeText.classList.add("fade-out"); // Add the fade-out class
+                    setTimeout(() => {
+                        currentIndex = (currentIndex + 1) % welcomeMessages.length;
+                        welcomeText.textContent = welcomeMessages[currentIndex];
+                        welcomeText.classList.remove("fade-out"); // Remove the fade-out class
+                    }, 1000); // Wait for the fade-out transition to complete
+                }
+
+                setInterval(changeWelcomeMessage, 6000);
+            </script>
             <input type="text" placeholder="Username" required>
             <input type="password" placeholder="Password" required>
             <button type="submit">Login</button>
-            <button type="button" id="create-account">Create New Account</button>
+            <button type="button" id="create-account">Register</button>
             <button type="button" id="try-out">Try Out</button>
         </form>
     </div>

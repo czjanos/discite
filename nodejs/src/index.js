@@ -30,6 +30,8 @@ const logFile = fs.createWriteStream(path.join(__dirname, "./acces.log"), {
 });
 app.use(morgan({ stream: logFile }));
 
+app.use(express.static(path.join(__dirname , '/public')));
+
 /* Postgres DB Connection. Follow the documentation: https://node-postgres.com */
 const { Client } = require("pg");
 
@@ -75,6 +77,5 @@ app.get("/part1_vulnerable", (req, res) => {
   res.render("pages/part1_vulnerable_results", { ...req.query });
 });
 
-app.use(express.static("public")); 
 
 app.listen(port, () => console.log(`Discite app listening on port ${port}!`));
