@@ -69,13 +69,18 @@ app.get("/", async (req, res) => {
   res.render("pages/index");
 });
 
-app.get("/part1", (req, res) => {
-  res.render("pages/part1");
+let score_sum = 0;
+
+app.get("/main", async (req, res) => {
+  score_sum++;
+  res.render("pages/main", {score_sum});
 });
 
+
+/*
 app.get("/part1_vulnerable", (req, res) => {
   res.render("pages/part1_vulnerable_results", { ...req.query });
-});
+});*/
 
 
 app.listen(port, () => console.log(`Discite app listening on port ${port}!`));
