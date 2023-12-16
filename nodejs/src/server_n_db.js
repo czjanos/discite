@@ -144,7 +144,7 @@ const login = async (req, res) => {
           }
           json_data = result.rows[0].json_val;
           if (json_data == null || json_data == undefined || json_data == "null" || json_data == "undefined") {
-            json_data = {name:username, max_score:0};
+            json_data = {name:username,email: result.rows[0].email,  max_score:0};
           }
           // Store user data in the session
           req.session.user = { username: username, data: json_data};
@@ -180,6 +180,14 @@ const register = async (req, res) => {
         .isLength({ min: 1, max: 512 }) // Enforce the max length of 512 characters
         .custom(value => !/\s/.test(value)) // Check for spaces
         .run(req),
+      query('email')
+        .notEmpty()
+        .escape()
+        .trim()
+        .isEmail()
+        .isLength({ min: 1, max: 256 }) // Enforce the max length of 512 characters
+        .custom(value => !/\s/.test(value)) // Check for spaces
+        .run(req),
     ]);
     const errors = validationResult(req);
     console.log(req.query)
@@ -191,6 +199,7 @@ const register = async (req, res) => {
 
     const password = req.query.password;
     const username = req.query.username;
+    const email = req.query.email;
     const saltRounds = 10; // Number of salt rounds (adjust as needed)
     const salt = bcrypt.genSaltSync(saltRounds);
 
@@ -198,7 +207,7 @@ const register = async (req, res) => {
     const hashedPassword = hashPassword(password, salt);
 
     // Insert user data into the database
-    const sql = `insert into users (username, password, salt) values ('${username}',  '${hashedPassword}', '${salt}');`;
+    const sql = `insert into users (username, password, salt, email) values ('${username}',  '${hashedPassword}', '${salt}', '${email}');`;
     console.log(sql)
     client.query(sql, (err, result) => {
       if (err) {

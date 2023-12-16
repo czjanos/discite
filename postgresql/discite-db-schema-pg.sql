@@ -2,12 +2,11 @@
 
 DROP TABLE IF EXISTS users;
 
-CREATE USER asd WITH SUPERUSER PASSWORD 'asd';
-
 CREATE TABLE users (
     username    VARCHAR( 32)    primary key,
     password    VARCHAR(512)    NOT NULL,
     salt        VARCHAR(512)    NOT NULL,
+    email       VARCHAR(256),
     json_val    JSON            
 );
 

@@ -13,6 +13,7 @@
     <div class="game-window" id="main">
         <% if (typeof data !== 'undefined') {%>
             <div style="color: rgb(4, 76, 0); font-size: 20px">Name "<b><%= data.name %></b>"</div>
+            <div style="color: rgb(4, 76, 0); font-size: 20px">E-mail "<b><%= data.email %></b>"</div>
             <div style="color: rgb(4, 76, 0); font-size: 20px">Max Score "<b><%= data.max_score %></b>"</div>
         <% } else{ %>
             Not logged in
