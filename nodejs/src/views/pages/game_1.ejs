@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flag Quiz Game</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Add your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #question {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        #flag-image {
+            max-width: 160px; /* Set a maximum width for the flag image */
+            margin: 10px auto; /* Center the image horizontally */
+        }
+        #choices {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .choice {
+            font-size: 18px;
+            cursor: pointer;
+            padding: 10px 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .choice:hover {
+            background-color: #f0f0f0;
+        }
+        #score {
+            font-size: 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <% if (typeof req !== 'undefined') {%>
+        <%- include('info', { req: req }); %>
+    <%}%>
+    <div class="game-window" id="game1">
+        <h1>Flag Quiz Game</h1>
+        <div id="question"></div>
+        <img id="flag-image" src="flags/ua.png" alt="Flag">
+        <div id="choices"></div>
+        <div id="score">Score: 0</div>
+
+        
+
+        <script>
+            let countries;
+            fetch('flags/codes.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json(); // Parse JSON response
+                })
+                .then(data => {
+                    countries = data
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+            });
+            const questions = [
+                {
+                    question: "Which country's flag is this?",
+                    choices: ["ua", "hu", "gb", "fr"],
+                    correctAnswer: "fr"
+                },
+                {
+                    question: "Identify the flag:",
+                    choices: ["USA", "Canada", "Australia", "United Kingdom"],
+                    correctAnswer: "gb"
+                },
+                {
+                    question: "What flag is this?",
+                    choices: ["Japan", "China", "South Korea", "North Korea"],
+                    correctAnswer: "jp"
+                },
+                // Add more questions and answers here...
+            ];
+
+            let currentQuestionIndex = 0;
+            let score = 0;
+
+            const questionElement = document.getElementById("question");
+            const flagImageElement = document.getElementById("flag-image");
+            const choicesElement = document.getElementById("choices");
+            const scoreElement = document.getElementById("score");
+
+            function displayQuestion() {
+                const currentQuestion = questions[currentQuestionIndex];
+                questionElement.textContent = currentQuestion.question;
+
+                // Update the flag image source based on the question
+                flagImageElement.src = `flags/${currentQuestion.correctAnswer.toLowerCase()}.png`;
+
+                choicesElement.innerHTML = "";
+                currentQuestion.choices.forEach((choice) => {
+                    const choiceElement = document.createElement("div");
+                    choiceElement.classList.add("choice");
+                    choiceElement.textContent = choice;
+                    choiceElement.addEventListener("click", () => checkAnswer(choice));
+                    choicesElement.appendChild(choiceElement);
+                });
+            }
+
+            function checkAnswer(selectedAnswer) {
+                const currentQuestion = questions[currentQuestionIndex];
+                if (selectedAnswer === currentQuestion.correctAnswer) {
+                    score++;
+                }
+                currentQuestionIndex++;
+                if (currentQuestionIndex < questions.length) {
+                    displayQuestion();
+                } else {
+                    endGame();
+                }
+            }
+
+            function endGame() {
+                questionElement.textContent = "Quiz completed!";
+                flagImageElement.style.display = "none"; // Hide the flag image
+                choicesElement.innerHTML = "";
+                const serverMessage = '0';
+                scoreElement.textContent = `Your score: ${score} out of ${questions.length} on try ${serverMessage}`;
+            }
+
+            // Start the game by displaying the first question
+            displayQuestion();
+        </script>
+    </div>
+</body>
+</html>

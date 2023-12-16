@@ -1,0 +1,42 @@
+<div style="color: rgb(43, 43, 43); font-size: 25px; position:absolute; top:0px; width: 100%;">
+    <table style="width: 100%; font-size: large;  background-color: #a67cff2d;">
+        <tr>
+            <td style="flex: 1; text-align: center;"><a href="/"       style="display: inline-block; padding: 3px 20px; background-color: #4caf4f98; color: white; text-decoration: none;">Home</a></td>
+            <td style="flex: 1; text-align: center;"><a href="/main?CSRFToken=<%= req.token %>"  style="display: inline-block; padding: 3px 20px; background-color: #4caf4f98; color: white; text-decoration: none;">Main</a></td>
+            <td style="flex: 1; text-align: center;"><a href="/game_1?CSRFToken=<%= req.token %>"  style="display: inline-block; padding: 3px 20px; background-color: #4caf4f98; color: white; text-decoration: none;">Game 1</a></td>
+            <td style="flex: 1; text-align: center;"><a href="/logout?CSRFToken=<%= req.token %>" style="display: inline-block; padding: 3px 20px; background-color: #f4433679; color: white; text-decoration: none;">Log Out</a></td>
+        </tr>
+    </table>
+    <div style="color: rgb(43, 43, 43); font-size: 25px;  background-color: rgba(116, 116, 116, 0.176);">
+        <% if (typeof req.session !== 'undefined' && req.session.user) {%>
+            <div style="color: rgb(4, 76, 0); font-size: 20px">Logged in as "<b><%= req.session.user.username %></b>"</div>
+        <% } else{ %>
+            Not logged in
+        <% } %>
+    </div>
+    <div style="color: rgb(43, 43, 43); font-size: 25px;  background-color: #761aff2d;">
+        <% if (typeof req.query !== 'undefined') {
+            if (typeof req.query.wrong_password !== 'undefined' && req.query.wrong_password == '1') { %>
+                <div style="color: red; font-size: 20px">Error: Wrong password or username!</div>
+            <% } %>
+            <% if (typeof req.query.success !== 'undefined' && req.query.success == '1') { %>
+                <div style="color: rgb(0, 84, 18); font-size: 20px">Login Successful!</div>
+            <% } %>
+            <% if (typeof req.query.reg_success !== 'undefined' && req.query.reg_success == '1') { %>
+                <div style="color: rgb(0, 84, 18); font-size: 20px">Registration Successful!</div>
+            <% } %>
+            <%  if (typeof req.query.not_authenticated !== 'undefined' && req.query.not_authenticated == '1') { %>
+                <div style="color: red; font-size: 20px">Error: Not authenticated!</div>
+            <% } %>
+            <%  if (typeof req.query.error !== 'undefined' && req.query.error == '1' && typeof req.errors === 'undefined') { %>
+                <div style="color: red; font-size: 20px">Error: Unknown error happened!</div>
+            <% } %>
+            <%  if (typeof req.errors !== 'undefined') { %>
+                <div style="color: red; font-size: 20px">Error: <%= req.errors %> </div>
+            <% } %>
+            <%  if (typeof req.query.wrong_csrf !== 'undefined' && req.query.wrong_csrf == '1') { %>
+                <div style="color: red; font-size: 20px">Error: Wrong csrf!</div>
+            <% } %>
+        <% } %>
+    </div>
+</div>

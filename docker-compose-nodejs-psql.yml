@@ -10,6 +10,7 @@ services:
       - "5432"
     ports:
       - "5432:5432"
+    restart: always
   web:
     build: ./nodejs
     container_name: web
@@ -24,3 +25,4 @@ services:
       - "8080:3000"
     depends_on:
       - db
+    restart: unless-stopped

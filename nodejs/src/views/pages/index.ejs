@@ -8,12 +8,19 @@
 </head>
 <body>
     <div   class="blur"></div>
+    <% if (typeof req !== 'undefined') {%>
+        <%- include('info', { req: req }); %>
+    <%}%>
     <!--<div class="logo-container">
         <div class="logo">Discite</div>
     </div>  -->
     <div class="login-container">
-        <form class="login-form" action="main">
-
+        <form class="login-form" action="/login-form">
+            <input
+                type="hidden"
+                name="CSRFToken"
+                value="<%= req.token %>"
+            />
             <div id="welcome-text">Welcome!</div>
             <script>
                 const welcomeMessages = [
@@ -44,12 +51,20 @@
 
                 setInterval(changeWelcomeMessage, 6000);
             </script>
-            <input type="text" placeholder="Username" required>
-            <input type="password" placeholder="Password" required>
-            <button type="submit">Login</button>
-            <button type="button" id="create-account">Register</button>
-            <button type="button" id="try-out">Try Out</button>
+            <input type="text" placeholder="Username" name="username" id="username" required>
+            <input type="password" placeholder="Password" name="password" id="password" required>
+            <button type="submit" name="action" value="login" id="login-button">Login</button>
+            <button type="submit" name="action" value="register" id="create-account">Register</button>
+            <button name="action" value="try" id="try-out" onclick="setTryAccount()">Try Out</button>
         </form>
+        
+        <script>
+            function setTryAccount() {
+                document.getElementById('username').value = 'try_account';
+                document.getElementById('password').value = 'try_account';
+                document.getElementById('login-button').click();
+            }
+        </script>
     </div>
 
     <script src="script.js"></script>

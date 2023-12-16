@@ -1,86 +1,57 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const morgan = require("morgan");
-const fs = require("fs");
-const util = require("util");
-const path = require("path");
 
-const port = parseInt(process.env.PORT, 10) || 3000;
 
-const app = express();
+const { app, render, csrf_valid, login, register, is_authenticated, start_server } = require('./server_n_db');
 
-// body parser
-app.use(bodyParser.urlencoded({ extended: true }));
+start_server();
 
-// set the view engine to ejs
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "/views"));
 
-const access = fs.createWriteStream(path.join(__dirname, "./output.log"), {
-  flags: "w",
-});
-
-console.log = function (d) {
-  //
-  access.write(util.format(d) + "\n");
-};
-
-const logFile = fs.createWriteStream(path.join(__dirname, "./acces.log"), {
-  flags: "a",
-});
-app.use(morgan({ stream: logFile }));
-
-app.use(express.static(path.join(__dirname , '/public')));
-
-/* Postgres DB Connection. Follow the documentation: https://node-postgres.com */
-const { Client } = require("pg");
-
-const DB_CONNECTION = {
-  user: "discite-database",
-  database: "discite-database",
-  password: "discite-database",
-  host: process.env.DB_HOST || "localhost",
-  port: 5432,
-};
-
-const client = new Client(DB_CONNECTION);
-client.connect();
-
-const printQueryResultsWithTitle = (title) => (err, res) => {
-  if (err) {
-    console.log(err.stack);
-  } else {
-    console.log(title);
-    console.log(res.rows);
-  }
-};
-
-client.query(
-  "SELECT * from messages",
-  printQueryResultsWithTitle("\n\n == Messages Contents == \n")
-);
-client.query(
-  "SELECT * from books",
-  printQueryResultsWithTitle("\n\n == Books Contents == \n")
-);
-
-/* Web server configurations to receive requests */
 app.get("/", async (req, res) => {
-  res.render("pages/index");
+  console.log("index");
+  render(req, res, "pages/index");
+});
+app.get("/index", async (req, res) => {
+  console.log("index");
+  render(req, res, "pages/index");
 });
 
-let score_sum = 0;
+app.get("/login-form", (req, res) => {
+  console.log(req.query)
+  if (csrf_valid(req, res)) {
+    if (req.query.action == "login") {
+      console.log("login");
+      login(req, res);
+    } else if (req.query.action == "register") {
+      console.log("register");
+      register(req, res);
+    } else if (req.query.action == "try") {
+      console.log("try");
+      req.query.username = "try_account"
+      req.query.password = "try_account"
+      login(req, res);
+    } else{
+      render(req, res, "pages/index");
+    }
+  }
+});
+
+app.get("/logout", (req, res) => {
+  console.log("logout");
+  if (csrf_valid(req, res)) {
+    req.session.destroy();
+    res.redirect("/");
+  }
+});
 
 app.get("/main", async (req, res) => {
-  score_sum++;
-  res.render("pages/main", {score_sum});
+  console.log("main");
+  if (is_authenticated(req, res)) {
+    render(req, res, "pages/main");
+  };
 });
 
-
-/*
-app.get("/part1_vulnerable", (req, res) => {
-  res.render("pages/part1_vulnerable_results", { ...req.query });
-});*/
-
-
-app.listen(port, () => console.log(`Discite app listening on port ${port}!`));
+app.get("/game_1", async (req, res) => {
+  console.log("game_1");
+  if (is_authenticated(req, res)) {
+    render(req, res, "pages/game_1");
+  };
+});

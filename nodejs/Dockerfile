@@ -1,5 +1,5 @@
 
-FROM node:12-alpine
+FROM node:20-alpine
 # If necessary to use a distro different from alpine
 # please replace by the line below.
 # FROM node:12.8.0
