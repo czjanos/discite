@@ -69,14 +69,37 @@ app.get("/", async (req, res) => {
   res.render("pages/index");
 });
 
-let score_sum = 0;
+let tries = 0;
 
-app.get("/main", async (req, res) => {
-  score_sum++;
-  res.render("pages/main", {score_sum});
+app.get("/flag-quiz", async (req, res) => {
+  tries++;
+  res.render("pages/flag-quiz", {tries});
 });
 
+app.get("/flag-memory", async (req, res) => {
+  tries++;
+  res.render("pages/flag-memory", {tries});
+});
 
+app.get("/games", async (req, res) => {
+  res.render("pages/game-selector");
+});
+
+app.get("/register", async (req, res) => {
+  res.render("pages/register");
+  // res.send(`
+  //   <form action="/register" method="post">
+  //     <label for="name">Name:</label>
+  //     <input type="text" id="name" name="name" required>
+  //     <button type="submit">Submit</button>
+  //   </form>
+  // `)
+});
+
+// app.post('/register', (req, res) => {
+//   const name = req.body.name || 'World';
+//   res.render("pages/register");
+// })
 /*
 app.get("/part1_vulnerable", (req, res) => {
   res.render("pages/part1_vulnerable_results", { ...req.query });

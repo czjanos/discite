@@ -8,6 +8,14 @@ body {
     background-size: cover;
 }
 
+.container {
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.2); /* semi-transparent white */
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
 .login-container {
     backdrop-filter: blur(10px);
     background: rgba(255, 255, 255, 0.2); /* semi-transparent white */
@@ -16,20 +24,28 @@ body {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.login-form {
+.register-container {
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.2); /* semi-transparent white */
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+form {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.login-form input {
+form input {
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #ddd;
     outline: none;
 }
 
-.login-form button {
+form button {
     padding: 10px;
     border: none;
     border-radius: 5px;
@@ -38,9 +54,10 @@ body {
     cursor: pointer;
 }
 
-.login-form button:hover {
+.form button:hover {
     background-color: #0056b3;
 }
+
 
 #try-out {
     background-color: #28a745;
