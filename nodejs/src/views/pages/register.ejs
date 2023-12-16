@@ -1,0 +1,40 @@
+<!--
+  ~ <<licensetext>>
+  -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discite</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div  class="blur"></div>
+    <% if (typeof req !== 'undefined') {%>
+        <%- include('info', { req: req }); %>
+    <%}%>
+    <!--<div class="logo-container">
+    <div class="logo">Discite</div>
+    </div>  -->
+    <div class="register-container">
+    <form id="register-form" action="/register-form">
+        <input
+                type="hidden"
+                name="CSRFToken"
+                value="<%= req.token %>"
+        />
+        <div id="welcome-text">Köszöntünk az oldalon!</div>
+
+        <input name="username" for="name" id="username" type="text" placeholder="Felhasználónév" required>
+        <input name="password" for="password" id="password" type="password" placeholder="Jelszó" required>
+        <input name="email" for="email" id="email" type="email" placeholder="E-mail cím" required>
+        <button type="submit" id="register">Regisztráció</button>
+    
+    </form>
+    </div>
+ 
+    <script src="register-scripts.js"></script>
+</body>
+</html>

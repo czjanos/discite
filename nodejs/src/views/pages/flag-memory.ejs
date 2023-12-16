@@ -1,0 +1,180 @@
+<!--
+  ~ <<licensetext>>
+  -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flag Memory Game</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            display: grid;
+            place-items: center;
+            min-height: 100vh;
+        }
+
+        .card {
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.3s ease-in-out;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        #game-window {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            max-width: 600px;
+        }
+
+        .show-card {
+            background: none; /* Remove background */
+        }
+
+        #flag {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
+
+
+    </style>
+</head>
+<body>
+    <% if (typeof req !== 'undefined') {%>
+        <%- include('info', { req: req }); %>
+    <%}%>
+    <!-- <div class="blur"></div>
+    <div class="container"></div> -->
+
+
+        
+
+        <script>
+            let countries;
+            fetch('flags/codes.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json(); // Parse JSON response
+                })
+                .then(data => {
+                    countries = data
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+            });
+             const questions = [
+                {
+                    correctAnswer: "fr"
+                },
+                {
+                    correctAnswer: "hu"
+                },
+                {
+                    correctAnswer: "ua"
+                },
+                {
+                    correctAnswer: "gb"
+                },
+                {
+                    correctAnswer: "jp"
+                },
+                {
+                    correctAnswer: "cn"
+                },
+                {
+                    correctAnswer: "se"
+                },
+                // Add more questions and answers here...
+            ]
+            let shuffledQuestions = shuffle(questions);
+
+    // Duplicate the questions to create pairs for matching
+    let gameQuestions = [...shuffledQuestions, ...shuffledQuestions];
+    gameQuestions = shuffle(gameQuestions);
+
+    // Create cards and add click event listeners <div id="game-window">
+    const cardContainer = document.createElement("div");
+    cardContainer.id = "game-window";
+    document.body.appendChild(cardContainer);
+    
+    gameQuestions.forEach((question, index) => {
+        const card = document.createElement("div");
+        const flag = document.createElement("img");
+        flag.src = `flags/black.png`;
+        flag.id ="flag";
+        card.classList.add("card");
+        // card.textContent = "?"; // Display a question mark on the card
+        card.dataset.index = index;
+        card.dataset.choice = question.correctAnswer;
+        card.addEventListener("click", handleCardClick);
+        card.appendChild(flag);
+        cardContainer.appendChild(card);
+    });
+    
+
+    let selectedCards = [];
+
+    function handleCardClick() {
+        const selectedCard = this;
+        const selectedFlag = selectedCard.children['flag'];
+        // selectedCard.textContent = gameQuestions[selectedCard.dataset.index].correctAnswer;
+        selectedFlag.src = `flags/${selectedCard.dataset.choice.toLowerCase()}.png`;
+
+        selectedCards.push(selectedCard);
+
+        if (selectedCards.length === 2) {
+            setTimeout(checkMatch, 1000);
+        }
+    }
+
+    function checkMatch() {
+        const [card1, card2] = selectedCards;
+        const [flag1, flag2] = [card1.children['flag'], card2.children['flag']]
+
+        if (card1.dataset.choice === card2.dataset.choice) {
+            // Matched, so disable click events on matched cards
+            card1.removeEventListener("click", handleCardClick);
+            card2.removeEventListener("click", handleCardClick);
+        } else {
+            flag1.src = `flags/black.png`;
+            flag2.src = `flags/black.png`;
+
+        }
+
+        // Clear the selected cards array
+        selectedCards = [];
+    }
+
+    function shuffle(array) {
+        const shuffledArray = [...array];
+        for (let i = shuffledArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+        }
+        return shuffledArray;
+    }
+        </script>
+    </div>
+</body>
+</html>

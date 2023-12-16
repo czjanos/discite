@@ -1,3 +1,7 @@
+<!--
+  ~ <<licensetext>>
+  -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,40 +9,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flag Quiz Game</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Add your CSS styles here */
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
-        #question {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-        #flag-image {
-            max-width: 160px; /* Set a maximum width for the flag image */
-            margin: 10px auto; /* Center the image horizontally */
-        }
-        #choices {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-        .choice {
-            font-size: 18px;
-            cursor: pointer;
-            padding: 10px 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .choice:hover {
-            background-color: #f0f0f0;
-        }
-        #score {
-            font-size: 20px;
-            margin-top: 20px;
-        }
-    </style>
 </head>
 <body>
     <% if (typeof req !== 'undefined') {%>
@@ -46,10 +16,19 @@
     <%}%>
     <div class="game-window" id="game1">
         <h1>Flag Quiz Game</h1>
+        <div>
+            <h2 id="timer">0:00</h2>
+            <!-- <button onclick="startTimer()">Start</button>
+            <button onclick="stopTimer()">Stop</button>
+            <button onclick="resetTimer()">Reset</button> -->
+            <script src="timer.js"></script>
+        </div>
+
         <div id="question"></div>
         <img id="flag-image" src="flags/ua.png" alt="Flag">
         <div id="choices"></div>
         <div id="score">Score: 0</div>
+
         
 
         <script>
@@ -70,21 +49,54 @@
             const questions = [
                 {
                     question: "Which country's flag is this?",
-                    choices: ["ua", "hu", "gb", "fr"],
+                    choices: ["United Kingdom", "Hungary", "Ukraine", "France"],
+                    choiceValues: ["ua", "hu", "gb", "fr"],
                     correctAnswer: "fr"
                 },
                 {
-                    question: "Identify the flag:",
+                    question: "Which country's flag is this?",
+                    choices: ["Ukraine", "Hungary", "United Kingdom", "France"],
+                    choiceValues: ["ua", "hu", "gb", "fr"],
+                    correctAnswer: "hu"
+                },
+                {
+                    question: "Which country's flag is this?",
+                    choices: ["France", "Hungary", "United Kingdom", "Ukraine"],
+                    choiceValues: ["ua", "hu", "gb", "fr"],
+                    correctAnswer: "ua"
+                },
+                {
+                    question:"Which country's flag is this?",
                     choices: ["USA", "Canada", "Australia", "United Kingdom"],
+                    choiceValues: ["us", "can", "au", "gb"],
                     correctAnswer: "gb"
                 },
                 {
-                    question: "What flag is this?",
+                    question: "Which country's flag is this?",
                     choices: ["Japan", "China", "South Korea", "North Korea"],
+                    choiceValues: ["jp", "ch", "sk", "nk"],
                     correctAnswer: "jp"
                 },
+                {
+                    question: "Which country's flag is this?",
+                    choices: ["Japan", "China", "South Korea", "North Korea"],
+                    choiceValues: ["jp", "ch", "sk", "nk"],
+                    correctAnswer: "cn"
+                },
+                {
+                    question:"Which country's flag is this?",
+                    choices: ["USA", "Canada", "Australia", "United Kingdom"],
+                    choiceValues: ["us", "can", "au", "gb"],
+                    correctAnswer: "gb"
+                },
+                {
+                    question: "Which country's flag is this?",
+                    choices: ["Japan", "China", "South Korea", "Sweden"],
+                    choiceValues: ["jp", "ch", "sk", "se"],
+                    correctAnswer: "se"
+                },
                 // Add more questions and answers here...
-            ];
+            ].sort(() => Math.random() - 0.5);
 
             let currentQuestionIndex = 0;
             let score = 0;
@@ -102,21 +114,25 @@
                 flagImageElement.src = `flags/${currentQuestion.correctAnswer.toLowerCase()}.png`;
 
                 choicesElement.innerHTML = "";
-                currentQuestion.choices.forEach((choice) => {
+                currentQuestion.choices.forEach((choice, index) => {
+                    const choiceValue = currentQuestion.choiceValues[index];
                     const choiceElement = document.createElement("div");
                     choiceElement.classList.add("choice");
                     choiceElement.textContent = choice;
-                    choiceElement.addEventListener("click", () => checkAnswer(choice));
+                    choiceElement.setAttribute('value', choiceValue)
+                    choiceElement.addEventListener("click", () => checkAnswer(choiceValue));
                     choicesElement.appendChild(choiceElement);
                 });
             }
 
             function checkAnswer(selectedAnswer) {
+                console.log(selectedAnswer);
                 const currentQuestion = questions[currentQuestionIndex];
                 if (selectedAnswer === currentQuestion.correctAnswer) {
                     score++;
                 }
                 currentQuestionIndex++;
+                scoreElement.textContent = `Score: ${score}`;
                 if (currentQuestionIndex < questions.length) {
                     displayQuestion();
                 } else {
@@ -128,8 +144,13 @@
                 questionElement.textContent = "Quiz completed!";
                 flagImageElement.style.display = "none"; // Hide the flag image
                 choicesElement.innerHTML = "";
-                const serverMessage = '0';
+                const serverMessage = `0`;
+                stopTimer();
+                const time = document.getElementById('timer').textContent;
+
                 scoreElement.textContent = `Your score: ${score} out of ${questions.length} on try ${serverMessage}`;
+                
+
             }
 
             // Start the game by displaying the first question

@@ -1,3 +1,7 @@
+<!--
+  ~ <<licensetext>>
+  -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +19,8 @@
         <div class="logo">Discite</div>
     </div>  -->
     <div class="login-container">
-        <form class="login-form" action="/login-form">
+
+        <form id="login-form" action="/login">
             <input
                 type="hidden"
                 name="CSRFToken"
@@ -51,22 +56,23 @@
 
                 setInterval(changeWelcomeMessage, 6000);
             </script>
-            <input type="text" placeholder="Username" name="username" id="username" required>
-            <input type="password" placeholder="Password" name="password" id="password" required>
-            <button type="submit" name="action" value="login" id="login-button">Login</button>
-            <button type="submit" name="action" value="register" id="create-account">Register</button>
-            <button name="action" value="try" id="try-out" onclick="setTryAccount()">Try Out</button>
+                <input for="username" name="username" id="username" type="text" placeholder="Username" required>
+                <input for="password" name="password" id="password" type="password" placeholder="Password" required>
+                <button id="login" type="submit">Login</button>
+
+            <button onclick="register()" type="button" id="create-account">Register</button>
+            <button onclick="try_out()" type="button" id="try-out">Try Out</button>
         </form>
-        
         <script>
-            function setTryAccount() {
-                document.getElementById('username').value = 'try_account';
-                document.getElementById('password').value = 'try_account';
-                document.getElementById('login-button').click();
-            }
+            register = function() {
+                window.location.href = '/register?CSRFToken=<%= req.token %>';
+            };
+            try_out = function() {
+                window.location.href = '/try-out?CSRFToken=<%= req.token %>';
+            };
         </script>
     </div>
 
-    <script src="script.js"></script>
+    <script src="login-scripts.js"></script>
 </body>
 </html>
