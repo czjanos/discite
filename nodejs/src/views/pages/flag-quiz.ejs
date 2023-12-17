@@ -2,6 +2,10 @@
   ~ <<licensetext>>
   -->
 
+<!--
+  ~ <<licensetext>>
+  -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +13,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flag Quiz Game</title>
     <link rel="stylesheet" href="style.css">
+        <style>
+        /* Add your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #question {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        #flag-image {
+            max-width: 160px; /* Set a maximum width for the flag image */
+            margin: 10px auto; /* Center the image horizontally */
+        }
+        #score {
+            font-size: 20px;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <% if (typeof req !== 'undefined') {%>
@@ -31,7 +54,7 @@
         <div id="question"></div>
         <img id="flag-image" src="flags/ua.png" alt="Flag">
         <div id="choices"></div>
-        <div id="score">Score: 0</div>
+        <div id="score"></div>
 
         
 
@@ -65,7 +88,7 @@
                 },
                 {
                     question: "Which country's flag is this?",
-                    choices: ["France", "Hungary", "United Kingdom", "Ukraine"],
+                    choices: ["Ukraine", "Hungary", "United Kingdom", "France"],
                     choiceValues: ["ua", "hu", "gb", "fr"],
                     correctAnswer: "ua"
                 },
@@ -84,7 +107,7 @@
                 {
                     question: "Which country's flag is this?",
                     choices: ["Japan", "China", "South Korea", "North Korea"],
-                    choiceValues: ["jp", "ch", "sk", "nk"],
+                    choiceValues: ["jp", "cn", "sk", "nk"],
                     correctAnswer: "cn"
                 },
                 {
@@ -104,7 +127,8 @@
 
             let currentQuestionIndex = 0;
             let score = 0;
-
+            
+            const gameElement = document.getElementById("game1");
             const questionElement = document.getElementById("question");
             const flagImageElement = document.getElementById("flag-image");
             const choicesElement = document.getElementById("choices");
@@ -136,7 +160,7 @@
                     score++;
                 }
                 currentQuestionIndex++;
-                scoreElement.textContent = `Score: ${score}`;
+                //scoreElement.textContent = `Score: ${score}`;
                 if (currentQuestionIndex < questions.length) {
                     displayQuestion();
                 } else {
@@ -153,6 +177,16 @@
                 const time = document.getElementById('timer').textContent;
 
                 scoreElement.textContent = `Your score: ${score} out of ${questions.length} on try ${serverMessage}`;
+                // .classList.add("glassy-button").classList.add("game-button")
+                const buttonHolderElement = document.createElement("div")
+                const buttonElement = document.createElement("a");
+                buttonElement.href = "/games?CSRFToken=<%= req.token %>";
+                buttonElement.classList.add("glassy-button", "game-button");
+                buttonElement.textContent = "Back to game selector";
+                buttonHolderElement.style.display = "inline-block";
+                buttonHolderElement.style.position = "relative";
+                buttonHolderElement.appendChild(buttonElement);
+                gameElement.appendChild(buttonHolderElement);
                 
 
             }

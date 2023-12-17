@@ -178,3 +178,24 @@ form button {
 .logout-button {
     background: linear-gradient(45deg, #2196f3, #21cbf3);
 }
+
+.choice {
+    display: inline-block;
+    padding: 15px 30px;
+    margin: 10px;
+    border-radius: 10px;
+    font-size: 20px;
+    text-decoration: none;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.choice:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    background-color: rgba(255, 255, 255, 0.15);
+}
