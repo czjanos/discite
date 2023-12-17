@@ -52,6 +52,12 @@
         background-color: #ffaaaa;
         border-color: #aa0000;
     }
+    .question-holder {
+            display: flex;
+            justify-content: center; /* Horizontal alignment */
+            align-items: center; /* Vertical alignment */
+            min-height: 100px; /* Set a height for the container */
+    }
     </style>
 </head>
 <body>
@@ -125,7 +131,7 @@ function createDroppableArea(correctAnswer) {
         const draggedData = event.dataTransfer.getData('text/plain');
         const isCorrect = draggedData === correctAnswer;
 
-        droppableArea.textContent = correctAnswer; // Use correctAnswer here
+        droppableArea.textContent = draggedData;
 
         if (isCorrect) {
             droppableArea.classList.remove('incorrect');
@@ -142,7 +148,7 @@ function createDroppableArea(correctAnswer) {
     function createQuestionElement(question) {
         const questionElement = document.createElement('div');
         questionElement.innerHTML = `
-            <p>${question.preText}<span id="droppableArea"></span>${question.proText}<p class="question-mark">?</p></p>
+            <div class="question-holder"><span>${question.preText}</span><span id="droppableArea"></span><span>${question.proText}</span><p class="question-mark">?</p></div>
         `;
 
         const shuffledChoices = shuffle(question.choices);
@@ -168,7 +174,7 @@ function createDroppableArea(correctAnswer) {
                 const content = droppable.textContent;
                 droppable.textContent = correctAnswer;
                 droppable.classList.add('correct');
-                console.log(content, correctAnswer);
+                droppableArea.classList.remove('incorrect');
             });
         });
 
