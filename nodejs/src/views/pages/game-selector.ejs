@@ -28,6 +28,9 @@
             transition: transform 0.3s ease-in-out;
             background: rgba(0, 0, 0, 0.3);
         }
+        .card p {
+            font-size: 14px;
+        }
 
         .card:hover {
             transform: scale(1.05);
@@ -47,7 +50,9 @@
     <div class="container">
         <div class="card-container" id="cardContainer">
             <!-- Cards will be dynamically added here using JavaScript -->
-        </div>  
+        </div>
+        <div id="back"></div>
+        <script src="back-to-menu.js"></script>
     </div>
 
     <script>
@@ -62,7 +67,7 @@
         // Function to create a card element
         function createCard(id, title, content) {
             const card = document.createElement("div");
-            card.classList.add("card");
+            card.classList.add("card","glassy-button", "game-button");
             card.innerHTML = `<h3>${title}</h3><p>${content}</p>`;
             card.addEventListener("click", () => handleCardClick(id));
             return card;

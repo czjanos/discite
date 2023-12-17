@@ -60,6 +60,12 @@
 </head>
 <body>
     <script src="leave-confirm.js"></script>
+    <div id="container" class="game-window">
+        <div id="back"></div>
+        <script src="back-to-menu.js"></script>
+    </div>
+
+
     <% if (typeof req !== 'undefined') {%>
         <% if (typeof data !== 'undefined') { %>
             <%- include('info', { req: req, data: data }); %>
@@ -119,9 +125,10 @@
     gameQuestions = shuffle(gameQuestions);
 
     // Create cards and add click event listeners <div id="game-window">
+    const containerElement = document.getElementById('container')
     const cardContainer = document.createElement("div");
     cardContainer.id = "game-window";
-    document.body.appendChild(cardContainer);
+    containerElement.appendChild(cardContainer);
     
     gameQuestions.forEach((question, index) => {
         const card = document.createElement("div");
