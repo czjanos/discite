@@ -2,6 +2,10 @@
   ~ <<licensetext>>
   -->
 
+<!--
+  ~ <<licensetext>>
+  -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +13,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Discite</title>
     <link rel="stylesheet" href="style.css">
+    <style>        
+        header {
+            background-color: #007bff;
+            padding: 20px;
+            text-align: center;
+            color: #fff;
+        }
+        section {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #007bff;
+        }
+        p {
+            line-height: 1.6;
+        }
+        li {
+            list-style: none;
+        }
+    </style>
 </head>
 <body>
     <div   class="blur"></div>
@@ -22,15 +50,36 @@
     <!--<div class="logo-container">
         <div class="logo">Discite</div>
     </div>  -->
-    <div class="login-container">
+    <div class="login-container" style="margin-right: 25px;">
 
-        <form id="login-form" action="/login">
+            <form id="login-form" action="/login">
             <input
                 type="hidden"
                 name="CSRFToken"
                 value="<%= req.token %>"
             />
-            <div id="welcome-text">Welcome!</div>
+                <input for="username" name="username" id="username" type="text" placeholder="Username" required>
+                <input for="password" name="password" id="password" type="password" placeholder="Password" required>
+                <button id="login" type="submit">Login</button>
+
+            <button onclick="register()" type="button" id="create-account">Register</button>
+            <button onclick="try_out()" type="button" id="try-out">Try Out</button>
+        </form>
+
+
+        <script>
+            register = function() {
+                window.location.href = '/register?CSRFToken=<%= req.token %>';
+            };
+            try_out = function() {
+                window.location.href = '/try-out?CSRFToken=<%= req.token %>';
+            };
+        </script>
+    </div>
+
+    <div class="login-container">
+    <div>
+        <div id="welcome-text">Welcome!</div>
             <script>
                 const welcomeMessages = [
                     "Bienvenido!",
@@ -60,22 +109,32 @@
 
                 setInterval(changeWelcomeMessage, 6000);
             </script>
-                <input for="username" name="username" id="username" type="text" placeholder="Username" required>
-                <input for="password" name="password" id="password" type="password" placeholder="Password" required>
-                <button id="login" type="submit">Login</button>
+        <p>Az Intelligens Tanulás Módja</p>
+        </div>
 
-            <button onclick="register()" type="button" id="create-account">Register</button>
-            <button onclick="try_out()" type="button" id="try-out">Try Out</button>
-        </form>
-        <script>
-            register = function() {
-                window.location.href = '/register?CSRFToken=<%= req.token %>';
-            };
-            try_out = function() {
-                window.location.href = '/try-out?CSRFToken=<%= req.token %>';
-            };
-        </script>
+    <section>
+        <h2>Miért válassza a Discite-t?</h2>
+        <p>A Discite egy innovatív tanulási platform, amely játékos és interaktív módon segít felfedezni és adaptálni a legjobb tanulási módszert. Személyre szabott tanulás gyerekeknek és felnőtteknek egyaránt!</p>
+    </section>
+
+    <section>
+        <h2>Fő funkciók</h2>
+        <ul>
+            <li>Interaktív játékokon keresztül tanulás</li>
+            <li>Személyre szabott tanulási módszerek</li>
+            <li>Eredmények és ajánlások a fejlődéshez</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Hogyan működik?</h2>
+        <p>A Discite egyszerű: csak játssz, tanulj és fejlődj! Az egyedi tanulási módszerek segítenek elérni a maximális eredményt minden felhasználó számára.</p>
+    </section>
     </div>
+
+
+
+
 
     <script src="login-scripts.js"></script>
 </body>
