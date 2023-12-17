@@ -199,3 +199,15 @@ form button {
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
     background-color: rgba(255, 255, 255, 0.15);
 }
+
+.question-mark {
+    cursor: pointer;
+    color: #ffffff;
+    font-size: 20px;
+    margin-left: 5px;
+}
+
+.droppable-area {
+    display: inline-block;
+    vertical-align: middle;
+}

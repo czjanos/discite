@@ -112,36 +112,37 @@
         return draggableChoice;
     }
 
-    function createDroppableArea(correctAnswer) {
-        const droppableArea = document.createElement('div');
-        droppableArea.classList.add('answer');
+function createDroppableArea(correctAnswer) {
+    const droppableArea = document.createElement('div');
+    droppableArea.classList.add('answer');
 
-        droppableArea.addEventListener('dragover', (event) => {
-            event.preventDefault();
-        });
+    droppableArea.addEventListener('dragover', (event) => {
+        event.preventDefault();
+    });
 
-        droppableArea.addEventListener('drop', (event) => {
-            event.preventDefault();
-            const draggedData = event.dataTransfer.getData('text/plain');
-            const isCorrect = draggedData === correctAnswer;
-            droppableArea.textContent = draggedData;
+    droppableArea.addEventListener('drop', (event) => {
+        event.preventDefault();
+        const draggedData = event.dataTransfer.getData('text/plain');
+        const isCorrect = draggedData === correctAnswer;
 
-            if (isCorrect) {
-                droppableArea.classList.remove('incorrect');
-                droppableArea.classList.add('correct');    
-            } else {
-                droppableArea.classList.remove('correct');
-                droppableArea.classList.add('incorrect');
-            }
-        });
+        droppableArea.textContent = correctAnswer; // Use correctAnswer here
 
-        return droppableArea;
-    }
+        if (isCorrect) {
+            droppableArea.classList.remove('incorrect');
+            droppableArea.classList.add('correct');    
+        } else {
+            droppableArea.classList.remove('correct');
+            droppableArea.classList.add('incorrect');
+        }
+    });
+
+    return droppableArea;
+}
 
     function createQuestionElement(question) {
         const questionElement = document.createElement('div');
         questionElement.innerHTML = `
-            <p>${question.preText}<span id="droppableArea"></span>${question.proText}</p>
+            <p>${question.preText}<span id="droppableArea"></span>${question.proText}<p class="question-mark">?</p></p>
         `;
 
         const shuffledChoices = shuffle(question.choices);
@@ -156,6 +157,20 @@
             choiceHolderElement.appendChild(createDraggableChoice(choice));
         });
         questionElement.appendChild(choiceHolderElement);
+
+        const questionMarkIcon = questionElement.querySelector('.question-mark');
+        questionMarkIcon.addEventListener('click', () => {
+            // Automatically fill in the correct answer when the question mark is clicked
+            const correctAnswer = question.correctAnswer;
+            const droppableAreas = questionElement.querySelectorAll('.answer');
+
+            droppableAreas.forEach((droppable) => {
+                const content = droppable.textContent;
+                droppable.textContent = correctAnswer;
+                droppable.classList.add('correct');
+                console.log(content, correctAnswer);
+            });
+        });
 
         return questionElement;
     }
