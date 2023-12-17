@@ -8,13 +8,118 @@
 </head>
 <body>
     <% if (typeof req !== 'undefined') {%>
-        <%- include('info', { req: req }); %>
+        <% if (typeof data !== 'undefined') { %>
+            <%- include('info', { req: req, data: data }); %>
+        <% } else { %>
+            <%- include('info', { req: req}); %>
+        <%  } %>
     <%}%>
     <div class="game-window" id="main">
         <% if (typeof data !== 'undefined') {%>
-            <div style="color: rgb(4, 76, 0); font-size: 20px">Name "<b><%= data.name %></b>"</div>
-            <div style="color: rgb(4, 76, 0); font-size: 20px">E-mail "<b><%= data.email %></b>"</div>
-            <div style="color: rgb(4, 76, 0); font-size: 20px">Max Score "<b><%= data.max_score %></b>"</div>
+            <% 
+                var old_date = new Date(data['login_time']);
+                var current_date = new Date();
+                
+                // Calculate the difference in milliseconds
+                var time_diff_ms = current_date - old_date;
+                
+                // Convert milliseconds to hours, minutes, and seconds
+                var seconds = Math.floor(time_diff_ms / 1000);
+                var minutes = Math.floor(seconds / 60);
+                var hours = Math.floor(minutes / 60);
+                
+                seconds = seconds % 60; // Remaining seconds after accounting for minutes
+                minutes = minutes % 60; // Remaining minutes after accounting for hours
+                
+                // Constructing a human-readable format
+                var human_readable = "";
+                if (hours > 0) {
+                    human_readable += hours + " hour" + (hours > 1 ? "s " : " ");
+                }
+                if (minutes > 0) {
+                    human_readable += minutes + " minute" + (minutes > 1 ? "s " : " ");
+                }
+                if (seconds > 0) {
+                    human_readable += seconds + " second" + (seconds > 1 ? "s" : "");
+                }
+                if (time_diff_ms < 1000)
+                {
+                    human_readable = time_diff_ms + " milliseconds";
+                }
+            %>
+            <style>
+                .info-container {
+                    font-family: Arial, sans-serif;
+                    margin: 10px;
+                }
+            
+                .info-item {
+                    color: #046C00; /* Dark green color */
+                    font-size: 20px;
+                    margin-bottom: 5px;
+                }
+            
+                .info-item b {
+                    color: #013300; /* Slightly darker green for emphasis */
+                }
+            
+                .info-title {
+                    font-weight: bold;
+                }
+                .info-item button {
+                    background-color: #0000002e;
+                    border: 1px solid #3722e338;
+                    color: #000000e6;
+                    padding: 2px 5px;
+                    font-size: 12px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                }
+
+                .info-item button:hover {
+                    background-color: #f0f0f0; /* Slight background on hover */
+                    border-color: #aaa;
+                    color: #555;
+                }
+            </style>
+            
+            <div class="info-container">
+                <table class="info-table">
+                    <tr class="info-item">
+                        <td class="info-title">Name:</td>
+                        <td id="nameText"><b><%= data.name %></b></td>
+                        <td><button onclick="editData('name')">Edit</button></td>
+                    </tr>
+                    <tr class="info-item">
+                        <td class="info-title">E-mail:</td>
+                        <td id="emailText"><b><%= data.email %></b></td>
+                        <td><button onclick="editData('email')">Edit</button></td>
+                    </tr>
+                    <tr class="info-item">
+                        <td class="info-title">Max Score:</td>
+                        <td id="max_scoreText"><b><%= data.max_score %></b></td>
+                        <td></td> <!-- Empty cell as there's no button for Max Score -->
+                    </tr>
+                    <tr class="info-item">
+                        <td class="info-title">Logged in since:</td>
+                        <td colspan="1"><b><%= human_readable %></b></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+            <script>
+                var data = get_data();
+            
+                function editData(field) {
+                    var newValue = prompt('Enter new value for ' + field + ':', data[field]);
+                    if (newValue !== null) {
+                        data[field] = newValue;
+                        document.getElementById(field + 'Text').innerText = newValue;
+                        upload_data(data);
+                    }
+                }
+            </script>
+            
         <% } else{ %>
             Not logged in
         <% } %>

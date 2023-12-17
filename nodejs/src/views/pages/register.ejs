@@ -13,7 +13,11 @@
 <body>
     <div  class="blur"></div>
     <% if (typeof req !== 'undefined') {%>
-        <%- include('info', { req: req }); %>
+        <% if (typeof data !== 'undefined') { %>
+            <%- include('info', { req: req, data: data }); %>
+        <% } else { %>
+            <%- include('info', { req: req}); %>
+        <%  } %>
     <%}%>
     <!--<div class="logo-container">
     <div class="logo">Discite</div>

@@ -36,6 +36,7 @@ const {
 // Attach CSRF protection middleware to all routes after session middleware
 app.use(csrfSynchronisedProtection);
 
+app.use(express.json());
 
 // body parser
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -73,7 +74,7 @@ const DB_CONNECTION = {
 
 let client;
 let sql_connect_tries = 0;
-
+let server_stats = {active_users:0, all_users:0, all_time_spent_ms:0};
 
 async function connectSql() {
   try {
@@ -102,9 +103,9 @@ async function connectSql() {
 let render = function (req, res, name){
   req.token= generateToken(req)
   if (req.session?.user?.data != undefined) {
-    res.render(name, {info: "info", req, data: req.session.user.data});
+    res.render(name, {info: "info", server_stats, req, data: req.session.user.data});
   } else {
-    res.render(name, {info: "info", req});
+    res.render(name, {info: "info", server_stats, req});
   }
 }
 
@@ -146,8 +147,11 @@ const login = async (req, res) => {
           if (json_data == null || json_data == undefined || json_data == "null" || json_data == "undefined") {
             json_data = {name:username,email: result.rows[0].email,  max_score:0};
           }
+          json_data['login_time'] = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ' ');
           // Store user data in the session
           req.session.user = { username: username, data: json_data};
+          server_stats.active_users++;
+          server_stats.all_users++;
           return res.redirect(`/main?success=1`);
         } else {
           return res.redirect(`/index?wrong_password=1`);
@@ -239,21 +243,41 @@ function hashPassword(password, salt) {
   return hash;
 }
 
-let is_authenticated = function(req, res){
+function logout(req, res) { 
+  var data = req.session.user.data;
+  var old_date = new Date(data['login_time']);
+  var current_date = new Date();
+  var time_diff_ms = current_date - old_date;
+  server_stats.active_users--;
+  server_stats.all_time_spent_ms += time_diff_ms;
+
+  req.session.destroy(function(err){  
+    if(err){  
+        console.log(err);  
+        res.redirect('/index'); 
+    }  
+    else  
+    {  
+        res.redirect('/index');  
+    }  
+  });
+}
+
+let is_authenticated = function(req, res, should_redirect = false){
   if (req.session.user) {
     const username = req.session.user.username;
     return true;
   } else {
-    res.redirect("/index?&not_authenticated=1");
+    if (should_redirect) res.redirect("/index?&not_authenticated=1");
     return false;
   }
 }
 
 
-let csrf_valid = function(req, res){
+let csrf_valid = function(req, res, should_redirect = false){
   if (req.query.CSRFToken == undefined || req.query.CSRFToken == null || req.query.CSRFToken == "" || req.query.CSRFToken !== req.session.csrfToken) {
     console.log("Wrong CSRF token= " + req.query['CSRFToken']+ " and session= " + req.session.csrfToken)
-    res.redirect("/index?&wrong_csrf=1");
+    if (should_redirect) res.redirect("/index?&wrong_csrf=1");
     return false
   }else{
     console.log("good token")
@@ -267,5 +291,5 @@ let start_server = function(){
 }  
 
 module.exports ={
-  app, start_server, csrf_valid, render, login, register, is_authenticated
+  app, start_server, csrf_valid, render, login, register, is_authenticated, logout
 }

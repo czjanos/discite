@@ -42,7 +42,11 @@
 </head>
 <body>
     <% if (typeof req !== 'undefined') {%>
-        <%- include('info', { req: req }); %>
+        <% if (typeof data !== 'undefined') { %>
+            <%- include('info', { req: req, data: data }); %>
+        <% } else { %>
+            <%- include('info', { req: req}); %>
+        <%  } %>
     <%}%>
     <div class="game-window" id="game1">
         <h1>Flag Quiz Game</h1>

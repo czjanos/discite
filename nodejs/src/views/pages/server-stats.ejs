@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flag Quiz Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <% if (typeof req !== 'undefined') {%>
+        <% if (typeof data !== 'undefined') { %>
+            <%- include('info', { req: req, data: data }); %>
+        <% } else { %>
+            <%- include('info', { req: req}); %>
+        <%  } %>
+    <%}%>
+    <div class="game-window" id="main">
+            <!-- Add some basic styles -->
+        <style>
+            .stats-container {
+                font-family: 'Arial', sans-serif;
+                background-color: #f2f2f2;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                padding: 15px;
+                margin: 10px 0;
+                text-align: center;
+            }
+
+            .stats-title {
+                color: #333;
+                font-size: 18px;
+                margin-bottom: 10px;
+                font-weight: bold;
+            }
+
+            .stats-value {
+                color: #555;
+                font-size: 16px;
+                margin-bottom: 5px;
+            }
+        </style>
+
+
+        <%
+            function timeConversion(milliseconds) {
+                let temp = milliseconds / 1000;
+                const years = Math.floor(temp / 31536000);
+                temp %= 31536000;
+                const days = Math.floor(temp / 86400);
+                temp %= 86400;
+                const hours = Math.floor(temp / 3600);
+                temp %= 3600;
+                const minutes = Math.floor(temp / 60);
+                const seconds = Math.floor(temp % 60);
+                
+                if (milliseconds < 1000) return (milliseconds + " milliseconds");
+                return (years ? years + " year" + (years > 1 ? "s " : " ") : "") +
+                    (days ? days + " day" + (days > 1 ? "s " : " ") : "") +
+                    (hours ? hours + " hour" + (hours > 1 ? "s " : " ") : "") +
+                    (minutes ? minutes + " minute" + (minutes > 1 ? "s " : " ") : "") +
+                    (seconds ? seconds + " second" + (seconds > 1 ? "s" : "") : "");
+            }
+        %>
+        <!-- Stats Container -->
+        <div class="stats-container">
+            <div>
+                <div class="stats-title">Server Statistics</div>
+
+                <div class="stats-value">
+                    Active Users: <b><%= server_stats.active_users %></b>
+                </div>
+
+                <div class="stats-value">
+                    Total Users: <b><%= server_stats.all_users %></b>
+                </div>
+
+                <div class="stats-value">
+                    Total Time Spent: <b><%= timeConversion(server_stats.all_time_spent_ms)%></b>
+                </div>
+                <% if (server_stats.all_users - server_stats.active_users > 0) { %>
+                    <div class="stats-value">
+                        Average Time Spent per User: <b><%= timeConversion(server_stats.all_time_spent_ms / (server_stats.all_users - server_stats.active_users)) %></b>
+                    </div>
+                <% } %>
+            </div>
+            <script>
+                function startStressTest(instances, login_time, duration) {
+                    fetch('/start-stress-test?CSRFToken=<%= req.token %>&instances=' + instances + '&login_time=' + login_time + '&duration=' + duration, {
+                        method: 'GET'
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        console.log('Success:', data);
+                        // Handle success - you can update the UI here if needed
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Handle errors here
+                    });
+                }
+            </script>
+            <style>
+                .important-button {
+                    background-color: #ff4500; /* Or any bold color */
+                    color: white;
+                    padding: 10px 20px;
+                    font-size: 18px;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                    transition: background-color 0.3s, box-shadow 0.3s;
+                }
+        
+                .important-button:hover {
+                    background-color: #e63900; /* Slightly darker shade for hover effect */
+                    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+                }
+        
+                .important-button:focus {
+                    outline: none; /* Removes the outline on focus for a cleaner look */
+                    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #ff4500; /* Adds a focus ring */
+                }
+            </style>
+            <br>
+            <div class="test-container">
+                <span class="test-description">5 users logged in for 5 seconds in the span of 5 seconds:</span>
+                <button class="important-button" onclick="startStressTest(5, 5, 5)">Start Stress Test</button>
+            </div>
+        
+            <!-- Duplicate the set with different instance counts -->
+            <div class="test-container">
+                <span class="test-description">100 users logged in for 10 seconds in the span of 10 seconds:</span>
+                <button class="important-button" onclick="startStressTest(100, 10, 10)">Start Stress Test</button>
+            </div>
+
+            <div class="test-container">
+                <span class="test-description">1000 users logged in for 70 seconds in the span of 70 seconds:</span>
+                <button class="important-button" onclick="startStressTest(1000, 70, 70)">Start Stress Test</button>
+            </div>
+
+            <div class="test-container">
+                <span class="test-description">10000 users logged in for 1000 seconds in the span of 1000 seconds:</span>
+                <button class="important-button" onclick="startStressTest(10000, 1000, 1000)">Start Stress Test</button>
+            </div>
+        
+            <!-- Add more duplicates with different instance counts as needed -->
+        
+            <style>
+                .test-container {
+                    margin-bottom: 10px;
+                }
+        
+                .test-description {
+                    margin-left: 10px;
+                    font-size: 16px;
+                }
+            </style>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -60,7 +60,11 @@
 </head>
 <body>
     <% if (typeof req !== 'undefined') {%>
-        <%- include('info', { req: req }); %>
+        <% if (typeof data !== 'undefined') { %>
+            <%- include('info', { req: req, data: data }); %>
+        <% } else { %>
+            <%- include('info', { req: req}); %>
+        <%  } %>
     <%}%>
     <!-- <div class="blur"></div>
     <div class="container"></div> -->

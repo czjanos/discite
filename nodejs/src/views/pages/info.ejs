@@ -11,6 +11,7 @@
                     { path: '/game_1', name: 'Game 1' },
                     { path: '/flag-memory', name: 'Flag Memory' },
                     { path: '/logout', name: 'Log Out' },
+                    { path: '/server-stats', name: 'Server Stats' },
                 ];
                 navItems.forEach(function(item) { %>
                     <td style="flex: 1; text-align: center;">
@@ -55,3 +56,41 @@
         <% } %>
     </div>
 </div>
+<% if (typeof data !== 'undefined') { %>
+<script>
+    function get_data() {
+        return JSON.parse('<%- JSON.stringify(data) %>');
+    }
+    function upload_data(json_data = JSON.parse('<%- JSON.stringify(data) %>')) {
+        fetch('/upload_data', {
+            method: 'POST', // Change to POST
+            headers: {
+                'Content-Type': 'application/json',
+                // Add CSRF token as a header if your server-side framework expects it this way
+                'x-csrf-token': "<%= req.token %>"
+            },
+            body: JSON.stringify({ json_data: json_data }) // Send data in the request body
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(data => {
+            console.log('Success:', data);
+            // Handle success - you can update the UI here if needed
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Handle errors here
+        });
+    }
+</script>
+<% }  else {%>
+    <script>
+        function upload_data() {
+            console.error('Nothing to upload:');
+        }
+    </script>
+<% }%>
