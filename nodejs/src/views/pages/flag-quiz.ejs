@@ -55,8 +55,13 @@
         <div id="question"></div>
         <img id="flag-image" src="flags/ua.png" alt="Flag">
         <div id="choices"></div>
+        <p class="question-mark">?</p>
         <div id="score"></div>
-        <div id="back"></div>
+        <div style="display: block; text-align: center; margin-left: auto; margin-right: auto;">
+            <div id="skip" class="glassy-button skip" style="margin-bottom: 10px;" onclick="endGame()">Kihagyás</div>
+            <div id="back"></div>
+        </div>
+        
         <script src="back-to-menu.js"></script>
 
         
@@ -137,12 +142,30 @@
             const choicesElement = document.getElementById("choices");
             const scoreElement = document.getElementById("score");
 
+
+
             function displayQuestion() {
                 const currentQuestion = questions[currentQuestionIndex];
                 questionElement.textContent = currentQuestion.question;
 
                 // Update the flag image source based on the question
                 flagImageElement.src = `flags/${currentQuestion.correctAnswer.toLowerCase()}.png`;
+
+                const questionMarkIcon = document.querySelector('.question-mark');
+                questionMarkIcon.addEventListener('click', () => {
+                    // Automatically fill in the correct answer when the question mark is clicked
+                    const correctAnswer = currentQuestion.correctAnswer;
+                    const choiceElements = document.querySelectorAll('.choice');
+                    choiceElements.forEach((choice, index) => {
+                        
+                        if(choice.attributes.value.value === currentQuestion.correctAnswer) {
+                            console.log(choice, choice.attributes.value.value ,currentQuestion.correctAnswer);
+                            choice.classList.add('correct');
+                        } else {
+                            choice.classList.remove('correct');
+                        }
+                    })
+                });
 
                 choicesElement.innerHTML = "";
                 currentQuestion.choices.forEach((choice, index) => {
@@ -163,7 +186,6 @@
                     score++;
                 }
                 currentQuestionIndex++;
-                //scoreElement.textContent = `Score: ${score}`;
                 if (currentQuestionIndex < questions.length) {
                     displayQuestion();
                 } else {
@@ -172,6 +194,8 @@
             }
 
             function endGame() {
+                const questionMarkIcon = document.querySelector('.question-mark');
+                questionMarkIcon.style.display = 'none';
                 questionElement.textContent = "Quiz completed!";
                 flagImageElement.style.display = "none"; // Hide the flag image
                 choicesElement.innerHTML = "";
@@ -180,7 +204,6 @@
                 const time = document.getElementById('timer').textContent;
 
                 scoreElement.textContent = `Your score: ${score} out of ${questions.length} on try ${serverMessage}`;
-                // .classList.add("glassy-button").classList.add("game-button")
                 const buttonHolderElement = document.createElement("div")
                 const buttonElement = document.createElement("a");
                 buttonElement.href = "/games?CSRFToken=<%= req.token %>";
@@ -190,7 +213,8 @@
                 buttonHolderElement.style.position = "relative";
                 buttonHolderElement.appendChild(buttonElement);
                 gameElement.appendChild(buttonHolderElement);
-                
+                const skipButton = document.getElementById('skip');
+                skipButton.style.display = 'none';
 
             }
 

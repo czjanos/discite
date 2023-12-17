@@ -61,7 +61,13 @@
 <body>
     <script src="leave-confirm.js"></script>
     <div id="container" class="game-window">
-        <div id="back"></div>
+        <h2 id="timer">0:00</h2>
+        <script src="timer.js"></script>
+        <div id="game"></div>
+         <div style="display: block; text-align: center; margin-left: auto; margin-right: auto;">
+            <div id="skip" class="glassy-button skip" style="margin-bottom: 10px;" onclick="endGame()">Kihagyás</div>
+            <div id="back"></div>
+        </div>
         <script src="back-to-menu.js"></script>
     </div>
 
@@ -125,7 +131,7 @@
     gameQuestions = shuffle(gameQuestions);
 
     // Create cards and add click event listeners <div id="game-window">
-    const containerElement = document.getElementById('container')
+    const containerElement = document.getElementById('game')
     const cardContainer = document.createElement("div");
     cardContainer.id = "game-window";
     containerElement.appendChild(cardContainer);
@@ -185,6 +191,13 @@
             [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
         }
         return shuffledArray;
+    }
+
+    function endGame() {
+        //@TODO: Show score
+        stopTimer();
+        const skipButton = document.getElementById('skip');
+        skipButton.style.display = 'none';
     }
         </script>
     </div>

@@ -211,3 +211,17 @@ form button {
     display: inline-block;
     vertical-align: middle;
 }
+
+    .correct {
+        background-color: #aaffaa;
+        border-color: #00aa00;
+    }
+
+    .incorrect {
+        background-color: #ffaaaa;
+        border-color: #aa0000;
+    }
+
+.skip {
+    background-color: rgba(0, 0, 0, 0.15);
+}
