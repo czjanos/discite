@@ -78,6 +78,13 @@ app.get("/flag-quiz", async (req, res) => {
   };
 });
 
+app.get("/fill-the-gap", async (req, res) => {
+  console.log("flag-quiz");
+  if (is_authenticated(req, res, true)) {
+    render(req, res, "pages/flag-fill-the-gap");
+  };
+});
+
 app.get("/server-stats", async (req, res) => {
   console.log("server-stats");
   render(req, res, "pages/server-stats");

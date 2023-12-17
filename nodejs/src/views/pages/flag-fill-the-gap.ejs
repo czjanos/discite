@@ -1,0 +1,180 @@
+<!--
+  ~ <<licensetext>>
+  -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fill the gap</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+    #quiz-container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
+    .choice {
+        margin: 5px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        cursor: grab;
+    }
+
+    .answer {
+        display: inline-block;
+        width: 75px;
+        height: 25px;
+        /* transform: translateY(20px); */
+        text-decoration: none;
+        color: white;
+        text-align: center;
+        font-weight: bold;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        background-color: rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        margin: 5px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .correct {
+        background-color: #aaffaa;
+        border-color: #00aa00;
+    }
+
+    .incorrect {
+        background-color: #ffaaaa;
+        border-color: #aa0000;
+    }
+    </style>
+</head>
+<body>
+    <% if (typeof req !== 'undefined') {%>
+        <% if (typeof data !== 'undefined') { %>
+            <%- include('info', { req: req, data: data }); %>
+        <% } else { %>
+            <%- include('info', { req: req}); %>
+        <%  } %>
+    <%}%>
+    <!-- <div class="blur"></div>
+    <div class="container"></div> -->
+     <div class="game-window" id="game1">
+        <div id="quiz-container"></div>
+     </div>
+    
+
+        
+
+        <script>
+            const questions = [
+                {
+                    question: "What's 1 + 4?",
+                    preText: "1 + 4 = ",
+                    proText: "?",
+                    choices: ["1", "2", "3", "4", "5"],
+                    correctAnswer: "5",
+                },
+                {
+                    question: "Fill in the correct answers",
+                    preText: "The Hungarian flag's color is red ",
+                    proText: " and green.",
+                    choices: ["yellow", "orange", "cyan", "black", "white"],
+                    correctAnswer: "white",
+                },
+            ];
+
+            const quizContainer = document.getElementById('quiz-container');
+            let shuffledQuestions = shuffle(questions);
+
+    // Duplicate the questions to create pairs for matching
+    let gameQuestions = [...shuffledQuestions, ...shuffledQuestions];
+    gameQuestions = shuffle(gameQuestions);
+
+    function createDraggableChoice(choice) {
+        const draggableChoice = document.createElement('div');
+        draggableChoice.textContent = choice;
+        draggableChoice.classList.add('choice');
+        draggableChoice.draggable = true;
+
+        draggableChoice.addEventListener('dragstart', (event) => {
+            event.dataTransfer.setData('text/plain', choice);
+        });
+
+        return draggableChoice;
+    }
+
+    function createDroppableArea(correctAnswer) {
+        const droppableArea = document.createElement('div');
+        droppableArea.classList.add('answer');
+
+        droppableArea.addEventListener('dragover', (event) => {
+            event.preventDefault();
+        });
+
+        droppableArea.addEventListener('drop', (event) => {
+            event.preventDefault();
+            const draggedData = event.dataTransfer.getData('text/plain');
+            const isCorrect = draggedData === correctAnswer;
+            droppableArea.textContent = draggedData;
+
+            if (isCorrect) {
+                droppableArea.classList.remove('incorrect');
+                droppableArea.classList.add('correct');    
+            } else {
+                droppableArea.classList.remove('correct');
+                droppableArea.classList.add('incorrect');
+            }
+        });
+
+        return droppableArea;
+    }
+
+    function createQuestionElement(question) {
+        const questionElement = document.createElement('div');
+        questionElement.innerHTML = `
+            <p>${question.preText}<span id="droppableArea"></span>${question.proText}</p>
+        `;
+
+        const shuffledChoices = shuffle(question.choices);
+        const choiceHolderElement = document.createElement('div');
+        choiceHolderElement.classList.add("choices");
+        
+        
+       const droppableArea = questionElement.querySelector('#droppableArea');
+        droppableArea.appendChild(createDroppableArea(question.correctAnswer))
+
+        shuffledChoices.forEach((choice) => {
+            choiceHolderElement.appendChild(createDraggableChoice(choice));
+        });
+        questionElement.appendChild(choiceHolderElement);
+
+        return questionElement;
+    }
+
+    function initializeQuiz() {
+        questions.forEach((question) => {
+            quizContainer.appendChild(createQuestionElement(question));
+        });
+    }
+
+    function shuffle(array) {
+        const shuffledArray = [...array];
+        for (let i = shuffledArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+        }
+        return shuffledArray;
+    }
+
+    
+    initializeQuiz();
+        </script>
+    </div>
+</body>
+</html>
