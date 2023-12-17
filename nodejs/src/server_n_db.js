@@ -263,6 +263,32 @@ function logout(req, res) {
   });
 }
 
+function upload_json(req, jsonData) {
+  return new Promise((resolve, reject) => {
+    try {
+      const username = req.session.user.username;
+      
+      // Use a parameterized query for safe database interactions
+      const sql = `UPDATE users SET json_val = $1 WHERE username = $2`;
+
+      client.query(sql, [jsonData, username], (err, result) => {
+        if (err) {
+          console.log(err.stack);
+          req.errors = JSON.stringify(err);
+          reject(err); // Reject the promise on error
+        } else {
+          resolve(true); // Resolve the promise on success
+        }
+      });
+
+    } catch (error) {
+      console.error(error);
+      req.errors = JSON.stringify(error);
+      reject(error); // Reject the promise on error
+    }
+  });
+}
+
 let is_authenticated = function(req, res, should_redirect = false){
   if (req.session.user) {
     const username = req.session.user.username;
@@ -291,5 +317,5 @@ let start_server = function(){
 }  
 
 module.exports ={
-  app, start_server, csrf_valid, render, login, register, is_authenticated, logout
+  app, start_server, csrf_valid, render, login, register, is_authenticated, logout, upload_json
 }

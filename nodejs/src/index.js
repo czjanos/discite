@@ -1,6 +1,6 @@
 
 
-const { app, render, csrf_valid, login, logout, register, is_authenticated, start_server } = require('./server_n_db');
+const { app, render, csrf_valid, login, logout, register, is_authenticated, start_server, upload_json } = require('./server_n_db');
 
 const {stressTest} = require('./stress-test');
 
@@ -110,5 +110,6 @@ app.post("/upload_data", async (req, res) => {
   const jsonData = req.body.json_data;
   console.log(jsonData);
   req.session.user.data = jsonData;
+  upload_json(req, jsonData);
   res.status(200).send('Data received');
 });
